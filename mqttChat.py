@@ -5,11 +5,12 @@ import sys
 from paho.mqtt import client as mqtt_client
 
 
-broker = 'broker.emqx.io'  # https://www.emqx.com/en/mqtt/public-mqtt5-broker
+# broker = 'broker.emqx.io'  # https://www.emqx.com/en/mqtt/public-mqtt5-broker
+broker = 'broker.hivemq.com'
 port = 1883
-publicTopic = "topic/tdi/2024-1/public"
-privateTopic = "topic/tdi/2024-1/317944"
-privateHeader = "topic/tdi/2024-1/"
+publicTopic = "topic/tdi/2024-2/public"
+privateTopic = "topic/tdi/2024-2/317944"
+privateHeader = "topic/tdi/2024-2/"
 # Generate a Client ID with the publish prefix.
 # client_id = f'publish-{random.randint(0, 1000)}'
 client_id = '##317944'
@@ -26,7 +27,8 @@ def connect_mqtt():
 
     client = mqtt_client.Client(
         mqtt_client.CallbackAPIVersion.VERSION2,
-        client_id)
+        client_id
+    )
     # client.username_pw_set(username, password)
     client.on_connect = on_connect
     client.connect(broker, port)
@@ -34,10 +36,7 @@ def connect_mqtt():
 
 
 def publish(client):
-    # msg_count = 1
     while True:
-        # time.sleep(1)
-        # msg = f"messages: {msg_count}"
         msg = input('')
         topic = ''
         if msg[0] == '#' and msg[1] == '#':
@@ -55,20 +54,16 @@ def publish(client):
             topic = publicTopic
         print(f"Sending `{msg}` to topic `{topic}`")
         result = client.publish(topic, msg)
-        # result: [0, 1]
         status = result[0]
         if status == 0:
             print(f"Send `{msg}` to topic `{topic}`")
         else:
             print(f"Failed to send message to topic {topic}")
-        # msg_count += 1
-        # if msg_count > 5:
-        #    break
 
 
 def subscribe(client: mqtt_client):
     def on_message(client, userdata, msg):
-        print(f"Received from `{client._client_id.decode().split('##')[1]}` on topic `{msg.topic}`\n\t> {msg.payload.decode()}")
+        print(f"Received from topic `{msg.topic}`\n\t> {msg.payload.decode()}")
 
     client.subscribe(publicTopic)
     client.subscribe(privateTopic)

@@ -4,7 +4,8 @@ import time
 
 
 # broker = 'broker.emqx.io'
-broker = 'public.mqtthq.com'
+# broker = 'public.mqtthq.com'
+broker = 'broker.hivemq.com'
 port = 1883
 topic = 'python/mqtt'
 client_id = f'python-mqtt-{random.randint(0, 1000)}'
@@ -38,7 +39,7 @@ def publish(client):
     msg_count = 1
     while True:
         time.sleep(1)
-        msg = f"messages: {msg_count}"
+        msg = f"messages: {msg_count+5} diferente"
         result = client.publish(topic, msg)
         # result: [0, 1]
         status = result[0]
